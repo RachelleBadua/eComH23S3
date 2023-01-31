@@ -10,4 +10,4 @@ require_once 'app/core/init.php';
 // inlcude can be less fatal
 //_once is to ensure things only are included once
 
-new App;
+new app\core\App;
