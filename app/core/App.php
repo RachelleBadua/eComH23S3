@@ -10,7 +10,7 @@ class App {
 
 		// we wish to route requests to /controller/method
 		$request = $this->parseUrl($_GET['url'] ?? '');
-												//var_dump($request); // this is to method_exists
+		//var_dump($request); // this is to method_exists
 
 		// default controller and method, will go here
 		$controller = 'Main';
@@ -31,7 +31,7 @@ class App {
 		$controller = 'app\\controllers\\' . $controller;
 		$controller = new $controller;
 
-		// it gets the class in the controller and a method
+		// it gets/checks if the class in the controller and a method exists
 		if(isset($request[1]) && method_exists($controller, $request[1])){
 			$method = $request[1];
 			//remove the request[1] element
@@ -44,7 +44,7 @@ class App {
 
 												// improve this to include parameters
 												//$controller->$method();
-		// Call the controller method with paramters
+		// Call the controller method with paramters, it directs to the method in the Main class.
 		call_user_func_array([$controller, $method], $params);
 	}
 
