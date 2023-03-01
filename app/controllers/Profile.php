@@ -44,6 +44,9 @@ class Profile extends \app\core\Controller{
 			$profile->last_name = $_POST['last_name'];
 			$profile->middle_name = $_POST['middle_name'];
 
+			$this->addPicture($_SESSION['user_id']);
+
+
 			$success = $profile->update();
 			if($success)
 				header('location:/Profile/index?success=Profile modified.');
@@ -51,6 +54,33 @@ class Profile extends \app\core\Controller{
 				header('location:/Profile/index?error=Something went wrong.');
 		}else{
 			$this->view('Profile/edit', $profile); // adding $profile tp view info, to fill the fields
+		}
+	}
+
+	// upload file and get uqiueid of image and put it into database
+	public function addPicture($user_id){
+
+		echo "add picture";
+
+		if(isset($_FILES['ProfilePicture'])) {//&& ($_FILES['ProfilePicture']['error'] == UPLOAD_ERR_OK)){
+			$info = getimagesize($_FILES['ProfilePicture']['tmp_name']);
+			$allowedTypes = ["IMAGETYPE_JPEG" => ".jpg", "IMAGETYPE_PNG" => ".png", "IMAGETYPE_GIF" => ".gif"];
+
+			if($info == false){
+				header('location:/Profile/edit?error=Wrong file format');
+			}else if(!array_key_exists($info[2], $allowedTypes)){ // file is being uploaded, but the image file type
+
+				header('location:/Profile/edit?error=The file type is not accepted');
+			} else {
+				// save the image in the images folder
+				$path = getcwd().DIRECTORY_SEPERATOR.'images'.DIRECTORY_SEPERATOR;
+				$fileName = uniqid().$allowedTypes[$info[2]]; 
+
+				move_uploaded_file($_FILES['ProfilePicture']['tmp_name'], $path.$fileName);
+			}
+		}else{
+			$this->view('Profile/edit');
+
 		}
 	}
 }
