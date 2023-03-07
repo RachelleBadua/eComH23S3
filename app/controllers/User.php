@@ -1,6 +1,7 @@
 <?php
 namespace app\controllers;
 
+// These are class attributes, define on top on the class 
 class User extends \app\core\Controller{
 
 	// login page
@@ -54,14 +55,20 @@ class User extends \app\core\Controller{
 		header('location:/User/index');
 	}
 
+	#[\app\filters\Login]
 	public function profile(){
 		// secure place
-		if(!isset($_SESSION['user_id'])){
-			header('location:/User/index');
-			return;
-		}
+		// if(!isset($_SESSION['user_id'])){
+		// 	header('location:/User/index');
+		// 	return;
+		// } // adding this code in the app\filters\Login file
 		$message = new \app\models\Message();
 		$messages = $message->getAllForUser($_SESSION['user_id']);
 		$this->view('User/profile', $messages);
+	}
+
+	#[\app\filters\Login]
+	public function somethingSecret(){
+		echo "If you see this then you are logged in";
 	}
 }

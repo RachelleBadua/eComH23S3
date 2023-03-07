@@ -7,6 +7,7 @@
 	<dd><?=$data->last_name?></dd>
 	<dt>Middle name</dt>
 	<dd><?=$data->middle_name?></dd>
+	<dd><img src="/../../images/<?= $data->picture?>"></dd>
 </dl>
 
 <a href='/Profile/edit'>Edit my profile</a>

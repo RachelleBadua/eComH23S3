@@ -39,6 +39,11 @@ class App {
 		}
 
 		$params = array_values($request);
+
+		// before we want to let user have access, have filtering 
+		// This is the right place for access filtering  
+		if($this->filter($controller, $method, $params))
+			return;  // deny access to method call
 		
 												//$controller->index(); // this is to test if the method works 
 
@@ -46,6 +51,30 @@ class App {
 												//$controller->$method();
 		// Call the controller method with paramters, it directs to the method in the Main class.
 		call_user_func_array([$controller, $method], $params);
+	}
+
+	public function filter($controller, $method, $params){
+		// we want to read the class and method attributes
+		// build the reflection object to read the methods, properties, attruibutes
+		$reflection = new \ReflectionObject($controller);
+		$classAttributes = $reflection->getAttributes(
+			\app\core\AccessFilter::class, // base class
+			\ReflectionAttribute::IS_INSTANCEOF // checking if it is an instance
+		);
+		$methodAttributes = $reflection->getMethod($method)->getAttributes(
+			\app\core\AccessFilter::class,
+			\ReflectionAttribute::IS_INSTANCEOF
+		);
+		$attributes = array_values(array_merge($classAttributes, $methodAttributes)); // putting all attributes in one single list
+		// run through all the conditions
+		foreach ($attributes as $attribute) {
+			// for an attribute, get the class instance (object)
+		 	// take the attiribute and the take the instance of a class and then use it
+			$filter = $attribute->newInstance();
+			if($filter->execute())
+				return true;
+		}
+		return false; 
 	}
 
 	function parseUrl($url) {

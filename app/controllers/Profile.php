@@ -22,6 +22,13 @@ class Profile extends \app\core\Controller{
 			$profile->last_name = $_POST['last_name'];
 			$profile->middle_name = $_POST['middle_name'];
 
+			$uploadedPicture = $this->uploadPicture($_SESSION['user_id']);
+
+            if(isset($uploadedPicture['target_file']))
+                $profile->picture = $uploadedPicture["target_file"];
+
+            $uploadMessage = $uploadedPicture["upload_message"] == 'success' ? '' : '&error=Something went wrong '.$uploadedPicture["upload_message"];
+
 			$success = $profile->insert();
 			if($success)
 				header('location:/Profile/index?success=Profile created.');
@@ -58,29 +65,72 @@ class Profile extends \app\core\Controller{
 	}
 
 	// upload file and get uqiueid of image and put it into database
-	public function addPicture($user_id){
+	public function uploadPicture($user_id){
 
-		echo "add picture";
+		// echo "add picture";
+		$uploadedFile = array();
 
-		if(isset($_FILES['ProfilePicture'])) {//&& ($_FILES['ProfilePicture']['error'] == UPLOAD_ERR_OK)){
+		if(isset($_FILES['ProfilePicture']) && ($_FILES['ProfilePicture']['error'] == UPLOAD_ERR_OK)){
+
 			$info = getimagesize($_FILES['ProfilePicture']['tmp_name']);
-			$allowedTypes = ["IMAGETYPE_JPEG" => ".jpg", "IMAGETYPE_PNG" => ".png", "IMAGETYPE_GIF" => ".gif"];
+
+			$allowedTypes = ["jpg", "png", "gif"];
+
+			$fileName = basename($_FILES["profilePicture"]["name"]);
+
+            $fileType = strtolower(pathinfo($fileName,PATHINFO_EXTENSION));
 
 			if($info == false){
-				header('location:/Profile/edit?error=Wrong file format');
-			}else if(!array_key_exists($info[2], $allowedTypes)){ // file is being uploaded, but the image file type
 
-				header('location:/Profile/edit?error=The file type is not accepted');
-			} else {
-				// save the image in the images folder
-				$path = getcwd().DIRECTORY_SEPERATOR.'images'.DIRECTORY_SEPERATOR;
-				$fileName = uniqid().$allowedTypes[$info[2]]; 
+                $uploadedFile["upload_message"] = "Bad image file format!";
+                $uploadedFile["target_file"] = null;
 
-				move_uploaded_file($_FILES['ProfilePicture']['tmp_name'], $path.$fileName);
-			}
-		}else{
-			$this->view('Profile/edit');
+            }else if(!in_array($fileType, $allowedTypes)){//File uploaded, but check the image file type
 
-		}
-	}
+                $uploadedFile["upload_message"] = "The image file type is not accepted!";
+                $uploadedFile["target_file"] = null;
+
+            }else{
+                // Save the image in the images folder
+                $path = '..'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR;
+
+                $targetFileName = $user_id.'-'.uniqid().'.'.$fileType;
+
+                move_uploaded_file($_FILES["profilePicture"]["tmp_name"], $path.$targetFileName);
+
+                $uploadedFile["upload_message"] = "success";
+
+                $uploadedFile["target_file"] = $targetFileName;
+
+                return  $uploadedFile;
+
+            }
+
+        }else{
+
+            $uploadedFile["upload_message"] = "Image not specified or not uploaded successfully.";
+
+            $uploadedFile["target_file"] = null;
+        }
+
+        return $uploadedFile;
+    }
 }
+// 			if($info == false){
+// 				header('location:/Profile/edit?error=Wrong file format');
+// 			}else if(!array_key_exists($info[2], $allowedTypes)){ // file is being uploaded, but the image file type
+
+// 				header('location:/Profile/edit?error=The file type is not accepted');
+// 			} else {
+// 				// save the image in the images folder
+// 				$path = getcwd().DIRECTORY_SEPERATOR.'images'.DIRECTORY_SEPERATOR;
+// 				$fileName = uniqid().$allowedTypes[$info[2]]; 
+
+// 				move_uploaded_file($_FILES['ProfilePicture']['tmp_name'], $path.$fileName);
+// 			}
+// 		}else{
+// 			$this->view('Profile/edit');
+
+// 		}
+// 	}
+// }
