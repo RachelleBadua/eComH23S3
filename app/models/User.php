@@ -8,7 +8,7 @@ class User extends \app\core\Model{
 
 	public function getByUsername($username){
 		$SQL = 'SELECT * FROM User WHERE username = :username';
-		$STH = $this->connection->prepare($SQL);
+		$STH = self::$connection->prepare($SQL);
 
 		$STH->execute(['username'=>$username]);
 		$STH->setFetchMode(\PDO::FETCH_CLASS, 'app\\models\\User');
@@ -17,11 +17,11 @@ class User extends \app\core\Model{
 
 	public function insert(){
 		$SQL = 'INSERT INTO User(username, password_hash) VALUES (:username, :password_hash)';
-		$STH = $this->connection->prepare($SQL);
+		$STH = self::$connection->prepare($SQL);
 
 		$STH->execute(['username'=>$this->username,
 						'password_hash'=>$this->password_hash]);
 		//$STH->setFetchMode(\PDO::FETCH_CLASS, 'app\\models\\User');
-		return $this->connection->lastInsertId(); // return the value of the new PK
+		return self::$connection->lastInsertId(); // return the value of the new PK
 	}
 }

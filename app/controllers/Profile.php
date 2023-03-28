@@ -51,8 +51,12 @@ class Profile extends \app\core\Controller{
 			$profile->last_name = $_POST['last_name'];
 			$profile->middle_name = $_POST['middle_name'];
 
-			$this->addPicture($_SESSION['user_id']);
+			$uploadedPicture = $this->uploadPicture($_SESSION['user_id']);
 
+            if(isset($uploadedPicture['target_file']))
+                $profile->picture = $uploadedPicture["target_file"];
+
+            $uploadMessage = $uploadedPicture["upload_message"] == 'success' ? '' : '&error=Something went wrong '.$uploadedPicture["upload_message"];
 
 			$success = $profile->update();
 			if($success)
@@ -92,7 +96,7 @@ class Profile extends \app\core\Controller{
 
             }else{
                 // Save the image in the images folder
-                $path = '..'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR;
+                $path = 'images'. DIRECTORY_SEPARATOR;
 
                 $targetFileName = $user_id.'-'.uniqid().'.'.$fileType;
 
