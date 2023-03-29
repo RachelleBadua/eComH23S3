@@ -9,11 +9,19 @@ class Model{
 	public function __construct(){
 
 		if (self::$connection == null){
-			$host = 'localhost';
-			$dbname = 'webapplication';
-			$user = 'root';
-			$pass = '';
-			$charset ='utf8mb4';
+
+			// this is supposed to load the .env file from the given folder
+			// put a .env in the parameter
+			$env = \Dotenv\Dotenv::createImmutable(getcwd());
+			// var_dump($env); // to check if it works
+			// need to add autoload of the composer
+			$env->load();
+			$env->required(['db_host','db_user','db_pass','db_name','db_charset']);//->notEmpty();
+			$host = $_ENV['db_host'];
+			$dbname = $_ENV['db_name'];
+			$user = $_ENV['db_user'];
+			$pass = $_ENV['db_pass'];			
+			$charset =$_ENV['db_charset'];
 			try {
 			 # MySQL with PDO_MYSQL
 			 	// $DBH = new \PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
