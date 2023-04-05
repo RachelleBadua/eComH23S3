@@ -23,10 +23,15 @@ class Model{
 			$pass = $_ENV['db_pass'];			
 			$charset =$_ENV['db_charset'];
 			try {
+				$options = [
+					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+					PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_CLASS,
+					PDO::ATTR_EMULATE_PREPARES => false
+				];
 			 # MySQL with PDO_MYSQL
 			 	// $DBH = new \PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
 			 	// self::$connection = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
-			 	self::$connection = new PDO("mysql:host=$host;dbname=$dbname;charset=$charset", $user, $pass);
+			 	self::$connection = new PDO("mysql:host=$host;dbname=$dbname;charset=$charset", $user, $pass, $options);
 			 	self::$connection->query("SET NAMES $charset");
 
 			}

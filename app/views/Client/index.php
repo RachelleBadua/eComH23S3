@@ -5,11 +5,16 @@
 <?php
 // assume $data is an array of client objects
 foreach ($data as $client) { ?>
-	<tr><td><?= htmlentities($client->first_name) ?></td>
+	<tr>
+		<td><?= htmlentities($client->first_name) ?></td>
 		<td><?= htmlentities($client->last_name) ?></td>
 		<td><?= htmlentities($client->middle_name) ?></td>
-		<td><a href='/Client/delete/<?=$client->client_id?>'><? 
-		_('delete') ?></a></td></tr>
+		<td>
+			<a href='/Client/delete/<?=$client->client_id?>'><?= _('delete') ?></a> | 
+			<a href='/Client/edit/<?=$client->client_id?>'><?= _('edit') ?></a> |
+			<a href='/Service/index/<?=$client->client_id?>'><?= _('service') ?></a>
+		</td>
+	</tr>
 <?php
 }
 ?>
