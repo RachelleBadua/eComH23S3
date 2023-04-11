@@ -3,7 +3,7 @@ namespace app\controllers;
 
 // use DateTime;
 // use IntlDateFormatter;
-// use \app\core\TimeHepler;
+use \app\core\TimeHelper;
 
 class Service extends \app\core\Controller{ // parent id
 	public function index($client_id){
@@ -17,11 +17,11 @@ class Service extends \app\core\Controller{ // parent id
 
 		if(isset($_POST['action'])){
 			// make new service
-			$service = new \app\models\Client();
+			$service = new \app\models\Service();
 
 			// populate the service
 			$service->description = htmlentities($_POST['description']);
-			$service->datetime = $_POST['datetime'];
+			$service->datetime = TimeHepler::DTInput($_POST['datetime']);
 			$service->client_id = $client_id;
 
 			// invoke the insert method
@@ -38,7 +38,7 @@ class Service extends \app\core\Controller{ // parent id
 
 	public function delete($service_id){ // PK value
 		$service = new \app\models\Service();
-		$service->get($service_id); //get id
+		$service = $service->get($service_id); //get id
 		// $client = $service->getClient(); // do this in the view
 		if(isset($_POST['action'])){
 			// proceed with deletion
@@ -59,8 +59,8 @@ class Service extends \app\core\Controller{ // parent id
 		// form is submitted
 		if(isset($_POST['action'])){
 			// TODO: save the data
-			$service->description = $_POST['description'];
-			$service->datetime = $_POST['datetime'];
+			$service->description = htmlentities($_POST['description']);
+			$service->datetime = TimeHepler::DTInput($_POST['datetime']);
 			// we do not change key values
 
 			// save the changes to the database
@@ -68,7 +68,7 @@ class Service extends \app\core\Controller{ // parent id
 			$client_id = $service->client_id;
 			header('location:/Service/index/'.$client_id);
 		}else {
-			$this->view('Client/edit', $service);
+			$this->view('Service/edit', $service);
 		}
 	}
 

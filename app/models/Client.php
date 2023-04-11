@@ -60,7 +60,7 @@ class Client extends \app\core\Model{
 		$SQL = "SELECT * FROM service WHERE client_id=:client_id";
 		$STH = self::$connection->prepare($SQL);
 		$STH->execute(['client_id'=>$this->client_id]);
-		$STH->setFetchMode(\PDO::FETCH_CLASS, 'app\\models\\Sercvice');
+		$STH->setFetchMode(\PDO::FETCH_CLASS, 'app\\models\\Service');
 		return $STH->fetchAll(); // gets the clients from database with an array
 	}
 }
