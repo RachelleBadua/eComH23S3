@@ -27,12 +27,16 @@ class TimeHelper{
 
 	public static function DTInput($s_datetime){
 		// create a datetime objcet in the local timezone
-		global $tz; // import tz from the global something space 
-		$datetime = new DateTime($s_datetime, new DateTimeZone($tz));
-		// change the timezone
-		$datetime->setTimezone(new DateTimeZone('UTC'));
-		// return output to a standard string format
-		return $datetime->format('Y-m-d H:i:s');
+		try {
+			global $tz; // import tz from the global something space 
+			$datetime = new DateTime($s_datetime, new DateTimeZone($tz));
+			// change the timezone
+			$datetime->setTimezone(new DateTimeZone('UTC'));
+			// return output to a standard string format
+			return $datetime->format('Y-m-d H:i:s');
+		} catch(\Exception $e) {
+			return '';
+		}
 	}
 
 	public static function DTOutBrowser($s_datetime){

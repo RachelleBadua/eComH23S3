@@ -2,6 +2,7 @@
 namespace app\core;
 
 use PDO;
+use ReflectionClass;
 
 class Model{
 	// ?PDO is for nullables
@@ -39,5 +40,56 @@ class Model{
 				echo $e->getMessage();
 			}
 		}
+	}
+
+	public function isValid() : bool{
+		// the goal of this function is to validate the data
+		$reflection = new ReflectionClass($this);
+		$properties = $reflection->getProperties();
+		foreach ($properties as $property) {
+			$attributes = $property->getAttributes(
+				\app\core\Validator::class,
+				\ReflectionAttribute::IS_INSTANCEOF
+			); // go through property to get attributes
+			$data = $property->getValue($this);
+			foreach ($attributes as $attribute) {
+				// create an object od that validator class
+				$validator = $attribute->newInstance();
+				// run the validation method on the data in the property
+				if (!$validator->isValid($data)) 
+					return false; // return false otherwise
+			}
+		}
+		return true; // return true if all the data is valid
+	}
+
+
+	// triggered when invoking inaccessibe methods
+	public function __call($method, $arguments){
+		if ($this->isValid()) {
+			call_user_func_array([$this, $method], $arguments);
+
+			// $this->method(...$arguments);
+			// $this->method($arguments[0], $arguments[1]); 
+			// can use this too 
+		}
+		// echo $method;
+		// die();
+	}
+
+	public function __set($name, $value){
+		$method = "set$name"; 
+		if(method_exists($this, $method)){
+			$this->$method($value);
+		}
+		// echo "$name => $value"; // this is setting the value to the object
+		// die();	
+	}
+
+	public function __get($name){
+		if (isset($this->$name)) // this checks the value it is getting
+			return $this->$name; 
+		else 
+			return '';
 	}
 }

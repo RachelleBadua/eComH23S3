@@ -6,7 +6,7 @@
 $client= $data->getClient();
 ?> 
 
-<?php $this->view('Client/detailsPartial', $data); ?>
+<?php $this->view('Client/detailsPartial', $client); ?>
 
 <?php $this->view('Service/detailsPartial', $data); ?>
 

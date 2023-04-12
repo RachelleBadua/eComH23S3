@@ -20,8 +20,8 @@ class Service extends \app\core\Controller{ // parent id
 			$service = new \app\models\Service();
 
 			// populate the service
-			$service->description = htmlentities($_POST['description']);
-			$service->datetime = TimeHepler::DTInput($_POST['datetime']);
+			$service->description = $_POST['description'];
+			$service->datetime = $_POST['datetime'];
 			$service->client_id = $client_id;
 
 			// invoke the insert method
@@ -44,7 +44,7 @@ class Service extends \app\core\Controller{ // parent id
 			// proceed with deletion
 			$client_id = $service->client_id;
 			$service->delete(); // deletes
-			header('location:/Client/index/'.$client_id);
+			header('location:/Service/index/'.$client_id);
 		} else {
 			$this->view('Service/delete', $service);
 		}
@@ -59,8 +59,8 @@ class Service extends \app\core\Controller{ // parent id
 		// form is submitted
 		if(isset($_POST['action'])){
 			// TODO: save the data
-			$service->description = htmlentities($_POST['description']);
-			$service->datetime = TimeHepler::DTInput($_POST['datetime']);
+			$service->description = $_POST['description'];
+			$service->datetime = $_POST['datetime'];
 			// we do not change key values
 
 			// save the changes to the database
@@ -78,7 +78,7 @@ class Service extends \app\core\Controller{ // parent id
 		//TODO: get the user timezone choice (get this from the browser) 
 		$date = new DateTime('Tuesday, April 5, 2023, 15:23:01');
 		global $lang;
-		echo TimeHepler::DTOutput($date,$lang,'America/Toronto');
+		echo TimeHelper::DTOutput($date,$lang,'America/Toronto');
 
 		// echo $date->format('l, F j, Y, G:i:s');
 		// global $lang;

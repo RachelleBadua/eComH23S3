@@ -1,13 +1,34 @@
 <?php
 namespace app\models;
 
+use app\core\TimeHelper;
+
 class Service extends \app\core\Model{
 	public $service_id;
-	public $description;
-	public $datetime;
+	#[\app\validators\NonEmpty]
+	#[\app\validators\NonNull]
+	protected $description;
+	#[\app\validators\DateTime]
+	#[\app\validators\NonNull]
+	protected $datetime; // protected to force the execution of __set and __get in Model
 	public $client_id;
 
-	public function insert(){
+
+	// build a setter
+	protected function setdatetime($value){
+		// $service->datetime = TimeHelper::DTInput($_POST['datetime']); // we want to make it like this
+		// in setting change the timezone
+		$this->datetime = TimeHelper::DTInput($value);
+	}
+
+	protected function setdescription($value){
+		// in setting change the timezone
+		$this->description = htmlentities($value, ENT_QUOTES);
+	}
+
+	// protected so they cannot be access through the controller
+	// protected to force execution the execution of __call in Model
+	protected function insert(){
 		$SQL = "INSERT INTO service (description, datetime, client_id) value (:description, :datetime, :client_id)";
 		$STH = self::$connection->prepare($SQL);
 		$data = [
@@ -19,8 +40,8 @@ class Service extends \app\core\Model{
 		$this->service_id = self::$connection->lastInsertId();
 	}
 
-	public function update(){
-		$SQL = "UPDTE service SET description=:description, datetime=:datetime, client_id=:client_id WHERE service_id=:service_id";
+	protected function update(){
+		$SQL = "UPDATE service SET description=:description, datetime=:datetime WHERE service_id=:service_id";
 		$STH = self::$connection->prepare($SQL);
 		$data = [
 					'description'=>$this->description, 
@@ -35,7 +56,7 @@ class Service extends \app\core\Model{
 	public function delete(){
 		$SQL = "DELETE FROM service WHERE service_id=:service_id"; // :service_id can have a different name but have to be the same in $data
 		$STH = self::$connection->prepare($SQL);
-		$data = ['service_id'=>$service_id];
+		$data = ['service_id'=>$this->service_id];
 		$STH->execute($data);
 		return $STH->rowCount();
 	}
