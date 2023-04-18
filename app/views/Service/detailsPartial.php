@@ -4,6 +4,9 @@
 	<dd><?= $data->description ?></dd>
 
 	<dt><?= _('Appointment date and time:') ?></dt>
-	<dd><?= $data->datetime ?></dd>
+	<dd><?= \app\core\TimeHelper::DTOutput($data->datetime) ?></dd>
+
+	<dt><?= _('Appointment location:') ?></dt>
+	<dd><?= $data->name ?></dd>
 
 </dl>

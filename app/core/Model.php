@@ -81,6 +81,8 @@ class Model{
 		$method = "set$name"; 
 		if(method_exists($this, $method)){
 			$this->$method($value);
+		} else {
+			$this->$name = $value;
 		}
 		// echo "$name => $value"; // this is setting the value to the object
 		// die();	

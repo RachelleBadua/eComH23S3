@@ -23,6 +23,7 @@ class Service extends \app\core\Controller{ // parent id
 			$service->description = $_POST['description'];
 			$service->datetime = $_POST['datetime'];
 			$service->client_id = $client_id;
+			$service->branch_id = $_POST['branch_id'];
 
 			// invoke the insert method
 			$service->insert();
@@ -32,7 +33,11 @@ class Service extends \app\core\Controller{ // parent id
 		}else{
 			$client = new \app\models\Client();
 			$client = $client->get($client_id);
-			$this->view('Service/create', $client);
+
+			$branch = new \app\models\Branch();
+			$branches = $branch->getAll();
+			
+			$this->view('Service/create', ['client'=>$client, 'branches'=>$branches]);
 		}
 	}
 
@@ -55,12 +60,12 @@ class Service extends \app\core\Controller{ // parent id
 		$service = new \app\models\Service();
 		$service = $service->get($service_id);
 	
-
 		// form is submitted
 		if(isset($_POST['action'])){
 			// TODO: save the data
 			$service->description = $_POST['description'];
 			$service->datetime = $_POST['datetime'];
+			$service->branch_id = $_POST['branch_id'];
 			// we do not change key values
 
 			// save the changes to the database
@@ -68,7 +73,9 @@ class Service extends \app\core\Controller{ // parent id
 			$client_id = $service->client_id;
 			header('location:/Service/index/'.$client_id);
 		}else {
-			$this->view('Service/edit', $service);
+			$branch = new \app\models\Branch();
+			$branches = $branch->getAll();
+			$this->view('Service/edit', ['service'=>$service, 'branches'=>$branches]);
 		}
 	}
 

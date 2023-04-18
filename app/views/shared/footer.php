@@ -1,4 +1,5 @@
 <ul>
+	<li><a href='/Client/index'>Make a service</a></li>
 	<li><a href='/Main/logUser'>Write you name in the log book</a></li>
 	<li><a href='/Main/viewUserLog'>View the log book</a></li>
 	<li><a href='/Main/index'>Index</a></li>
