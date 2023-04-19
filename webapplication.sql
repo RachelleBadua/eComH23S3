@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 05, 2023 at 05:58 PM
--- Server version: 10.4.22-MariaDB
--- PHP Version: 8.1.2
+-- Generation Time: Apr 19, 2023 at 07:24 PM
+-- Server version: 10.4.27-MariaDB
+-- PHP Version: 8.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -26,6 +26,30 @@ USE `webapplication`;
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `branch`
+--
+
+DROP TABLE IF EXISTS `branch`;
+CREATE TABLE `branch` (
+  `branch_id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `street` varchar(50) NOT NULL,
+  `city` varchar(50) NOT NULL,
+  `province` varchar(50) NOT NULL,
+  `postal` varchar(7) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `branch`
+--
+
+INSERT INTO `branch` (`branch_id`, `name`, `street`, `city`, `province`, `postal`) VALUES
+(1, 'Saint-Laurent', '821 Ste-Croix', 'St-Laurent', 'Qc', 'H4L 3X9'),
+(3, 'Laval', '123 Laval', 'Laval', 'Qc', 'H2T 4B3');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `client`
 --
 
@@ -35,7 +59,14 @@ CREATE TABLE `client` (
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `middle_name` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `client`
+--
+
+INSERT INTO `client` (`client_id`, `first_name`, `last_name`, `middle_name`) VALUES
+(3, 'Rachelle', 'Badua', 'hehe');
 
 -- --------------------------------------------------------
 
@@ -50,7 +81,7 @@ CREATE TABLE `message` (
   `receiver` int(11) NOT NULL,
   `message` text NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `message`
@@ -63,7 +94,8 @@ INSERT INTO `message` (`message_id`, `sender`, `receiver`, `message`, `timestamp
 (5, 6, 7, 'wake up jennifer', '2023-02-22 16:53:06'),
 (6, 5, 6, 'hi', '2023-02-22 16:54:38'),
 (7, 5, 6, 'wanna play?', '2023-02-22 16:54:52'),
-(8, 7, 6, 'hehe', '2023-03-28 15:34:50');
+(8, 7, 6, 'hehe', '2023-03-28 15:34:50'),
+(9, 7, 6, 'twice concert!!', '2023-04-19 16:43:56');
 
 -- --------------------------------------------------------
 
@@ -78,7 +110,7 @@ CREATE TABLE `profile_information` (
   `last_name` varchar(50) NOT NULL,
   `middle_name` varchar(50) NOT NULL,
   `picture` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `profile_information`
@@ -101,8 +133,20 @@ CREATE TABLE `service` (
   `service_id` int(11) NOT NULL,
   `description` text NOT NULL,
   `datetime` datetime NOT NULL,
-  `client_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `client_id` int(11) NOT NULL,
+  `branch_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `service`
+--
+
+INSERT INTO `service` (`service_id`, `description`, `datetime`, `client_id`, `branch_id`) VALUES
+(2, 'therapy', '2023-04-27 14:15:00', 3, 1),
+(4, 'graduation!!', '2024-05-14 14:51:00', 3, 1),
+(5, 'dentist ', '2023-05-09 20:00:00', 3, 3),
+(6, 'hehe', '2023-05-16 15:33:00', 3, 1),
+(7, 'hihi', '2023-05-05 15:05:00', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -114,25 +158,34 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `user_id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
-  `password_hash` varchar(72) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `password_hash` varchar(72) NOT NULL,
+  `secret_key` varchar(16) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`user_id`, `username`, `password_hash`) VALUES
-(1, 'bana', '$2y$10$n8o252RdegdLKtZLBi0/RemEEYV9fQGruC1pRlQYiD1SRK.D5vx2y'),
-(3, 'miso', '$2y$10$3YO3ksmM8zQDbYHCaLNhfu.8FTK.91SnZDKffN3HTOfGEf4vZY9Ia'),
-(5, 'mert', '$2y$10$/Rm940OasJjfnFj1HShJne4Beo/TVWaX4y3MES9sOs46aw8KG7C5S'),
-(6, 'mubeen', '$2y$10$SBuoT8m79xyEiaYOtC.HPOTc49inS072RViPRVgzqIWgjB2LmoxLm'),
-(7, 'rachelle', '$2y$10$8thvR6U1LYg/IveJBOwVPu1f6hprN6VBPwPJ6U/dDZw5Z5/g0WgHq'),
-(8, 'todelete', '$2y$10$/Rm940OasJjfnFj1HShJne4Beo/TVWaX4y3MES9sOs46aw8KG7C5S'),
-(9, 'Mae', '$2y$10$PGtbdKt4DqlnsNCazk0zbeJbf17Itea2V0tVFUQL.fJZbL0w717hm');
+INSERT INTO `user` (`user_id`, `username`, `password_hash`, `secret_key`) VALUES
+(1, 'bana', '$2y$10$n8o252RdegdLKtZLBi0/RemEEYV9fQGruC1pRlQYiD1SRK.D5vx2y', ''),
+(3, 'miso', '$2y$10$3YO3ksmM8zQDbYHCaLNhfu.8FTK.91SnZDKffN3HTOfGEf4vZY9Ia', ''),
+(5, 'mert', '$2y$10$/Rm940OasJjfnFj1HShJne4Beo/TVWaX4y3MES9sOs46aw8KG7C5S', ''),
+(6, 'mubeen', '$2y$10$SBuoT8m79xyEiaYOtC.HPOTc49inS072RViPRVgzqIWgjB2LmoxLm', ''),
+(7, 'rachelle', '$2y$10$Yluee21AnNb15fAhJ45jA.2OOZwxzgBcRz7wOW3AZ31nAzHdO.cku', 'YMDW6BMFKO67HWJ7'),
+(8, 'todelete', '$2y$10$/Rm940OasJjfnFj1HShJne4Beo/TVWaX4y3MES9sOs46aw8KG7C5S', ''),
+(9, 'Mae', '$2y$10$PGtbdKt4DqlnsNCazk0zbeJbf17Itea2V0tVFUQL.fJZbL0w717hm', ''),
+(10, 't1', '$2y$10$z6Fh1z.U4Sxkl3L3C/RbVOsZAivYhhTxk5gpR3JYDibQw41Ut0UTq', 'SXWAY3Z'),
+(11, 'hehehe', '$2y$10$Yluee21AnNb15fAhJ45jA.2OOZwxzgBcRz7wOW3AZ31nAzHdO.cku', 'VETKADX');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `branch`
+--
+ALTER TABLE `branch`
+  ADD PRIMARY KEY (`branch_id`);
 
 --
 -- Indexes for table `client`
@@ -159,7 +212,8 @@ ALTER TABLE `profile_information`
 --
 ALTER TABLE `service`
   ADD PRIMARY KEY (`service_id`),
-  ADD KEY `service_to_client` (`client_id`);
+  ADD KEY `service_to_client` (`client_id`),
+  ADD KEY `service_to_branch` (`branch_id`);
 
 --
 -- Indexes for table `user`
@@ -173,28 +227,34 @@ ALTER TABLE `user`
 --
 
 --
+-- AUTO_INCREMENT for table `branch`
+--
+ALTER TABLE `branch`
+  MODIFY `branch_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `client`
 --
 ALTER TABLE `client`
-  MODIFY `client_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `client_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `message`
 --
 ALTER TABLE `message`
-  MODIFY `message_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `message_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `service`
 --
 ALTER TABLE `service`
-  MODIFY `service_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `service_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Constraints for dumped tables
@@ -217,6 +277,7 @@ ALTER TABLE `profile_information`
 -- Constraints for table `service`
 --
 ALTER TABLE `service`
+  ADD CONSTRAINT `service_to_branch` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`),
   ADD CONSTRAINT `service_to_client` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`);
 COMMIT;
 

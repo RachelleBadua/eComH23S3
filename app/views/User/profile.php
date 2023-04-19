@@ -3,6 +3,8 @@
 USER PROFILE
 <a href='/Profile/index'>See my profile</a>
 
+<br><a href='/User/setup2fa'>Set factor 2 authentication</a>
+
 <h1>Messages</h1>
 
 <h2>My messages</h2>
